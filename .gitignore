@@ -1,0 +1,19 @@
+# OnCmd runtime state
+state.json
+config.json
+events.log
+oncmd.log
+*.bad-*
+*.tmp
+
+# Local runtime directory if copied into a checkout
+OnCmdRuntime/
+
+# PowerShell/editor noise
+*.user
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
