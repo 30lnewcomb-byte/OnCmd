@@ -6,35 +6,9 @@
 
 ```text
   +==========================================================================+
-  |                                                                          |
   |                         O N C M D - [POWER]                             |
-  |                                                                          |
   |                    DIGITAL BOUNDARY AGENT                              |
-  |                                                                          |
   +==========================================================================+
-
-                  ██████╗ ███╗   ██╗ ██████╗███╗   ███╗██████╗
-                 ██╔═══██╗████╗  ██║██╔════╝████╗ ████║██╔══██╗
-                 ██║   ██║██╔██╗ ██║██║     ██╔████╔██║██║  ██║
-                 ██║   ██║██║╚██╗██║██║     ██║╚██╔╝██║██║  ██║
-                 ╚██████╔╝██║ ╚████║╚██████╗██║ ╚═╝ ██║██████╔╝
-
-                            +------------+
-                            |     [ ]    |
-                            |      |     |
-                            |    [   ]   |
-                            +------------+
-
-                  D I G I T A L   B O U N D A R Y
-                            A G E N T
-
-       +------------------------------------------------------------+
-       | CORE       ● POWERSHELL                                   |
-       | WORKER     ● BACKGROUND                                   |
-       | BOUNDARY   ● WINDOWS SESSION LOCK                       |
-       | COOLDOWN   ● WAIT FOR ACTUAL SLEEP                      |
-       | STORAGE    ● LOCAL PERSISTENCE                           |
-       +------------------------------------------------------------+
 
          ◆ LOCAL-FIRST    ◆ PERSISTENT    ◆ EVENT-DRIVEN
 ```
@@ -47,15 +21,6 @@ OnCmd is a PowerShell-based Windows automation project built around a simple ide
 
 OnCmd has a dedicated colorful terminal-inspired project banner in [`assets/oncmd-art.svg`](assets/oncmd-art.svg). Art is an important part of the project because its creator has a genuine passion for art and enjoys bringing that creative side into technical projects. The goal is for OnCmd to feel both engineered and expressive—not just functional code in a folder.
 
-The artwork highlights the main architecture:
-
-- **Core** — PowerShell
-- **Worker** — Background enforcement
-- **Boundary** — Windows session lock
-- **Cooldown** — Actual Windows sleep detection/reset behavior
-- **Voice** — Optional local voice control
-- **Dates** — Automatic date/theme awareness
-
 ## Current architecture
 
 - **Core** — PowerShell command/control layer
@@ -63,29 +28,47 @@ The artwork highlights the main architecture:
 - **Boundary** — Windows session lock at cutoff
 - **Cooldown** — waits for an actual Windows sleep cycle before resetting
 - **Storage** — persistent local JSON state and event logs
-- **Learning** — records cutoff history so OnCmd can suggest the user's usual time
+- **Learning** — cutoff history for future usual-time suggestions
 - **Voice** — optional local Windows speech recognition worker
-- **Date & Theme Engine** — automatically knows the current date and can switch the terminal theme for special dates
+- **Dates** — current-date awareness
+- **Themes** — automatic presentation layer kept separate from enforcement
 
-## 🎂 Birthday Theme
+## 🎨 Automatic Theme System
 
-OnCmd can remember a birthday **once** as a month/day. You do not need to re-enter it every year.
+OnCmd now has a complete built-in theme library in [`src/OnCmd.Themes.ps1`](src/OnCmd.Themes.ps1). The date engine in [`src/OnCmd.Dates.ps1`](src/OnCmd.Dates.ps1) automatically chooses the theme.
 
-The date engine stores only the month and day, so the birthday theme automatically activates every year without storing a birth year. Birthday theme detection takes priority over seasonal themes.
+### Built-in themes
 
-Example:
+| Theme | Automatic trigger |
+|---|---|
+| 🎂 **Birthday** | Configured birthday; highest priority |
+| 🎃 **Halloween** | October 31 |
+| 🦃 **Thanksgiving** | Fourth Thursday of November |
+| 🎄 **Christmas** | December 20–31 |
+| 🎆 **New Year** | January 1 |
+| ❤️ **Valentine** | February 14 |
+| 🇺🇸 **Independence Day** | July 4 |
+| 🎒 **Back to School** | August 15–September 7 |
+| 🌸 **Spring** | March–May |
+| ☀️ **Summer** | June–August |
+| 🍂 **Autumn** | September–November |
+| ❄️ **Winter** | December–February |
+| ⏻ **Default** | Fallback |
+
+The priority order is deterministic: **Birthday → fixed holidays → Thanksgiving → back-to-school → seasons**.
+
+Themes only affect presentation. They **cannot change the cutoff, worker, lock, cooldown, or sleep-reset behavior**.
+
+### Birthday setup
+
+Set it once:
 
 ```powershell
 . "$env:LOCALAPPDATA\OnCmd\src\OnCmd.Dates.ps1"
 Set-OnCmdBirthday -Month 4 -Day 21
-
-Get-OnCmdTheme
-# BIRTHDAY (on the configured date)
 ```
 
-To change it later, run `Set-OnCmdBirthday` again. To remove it, use `Clear-OnCmdBirthday`.
-
-The date engine also recognizes built-in special dates such as New Year's Day, Valentine's Day, Independence Day, Halloween, and the winter holiday period. The design intentionally keeps themes separate from the cutoff logic: a theme can never change the enforcement behavior.
+The birthday is stored as month/day only, so it automatically works every year. Run `Set-OnCmdBirthday` again if it ever needs to change, or `Clear-OnCmdBirthday` to remove it.
 
 ## Repository layout
 
@@ -94,11 +77,11 @@ OnCmd/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── install.ps1
 ├── assets/
 │   └── oncmd-art.svg
 ├── src/
-│   └── OnCmd.Dates.ps1
+│   ├── OnCmd.Dates.ps1
+│   └── OnCmd.Themes.ps1
 └── config/
     └── config.example.json
 ```
@@ -114,6 +97,7 @@ The repository contains the **program and installer logic**. Runtime state is in
 - No AI API required for core operation
 - Optional local voice control
 - Automatic date awareness
+- Automatic theme selection
 - Personal birthday theme stored once
 - Themes never control the safety/enforcement path
 - No credential handling
@@ -152,4 +136,4 @@ This keeps personal schedules, history, and machine-specific state out of source
 
 ## Status
 
-Early development. The first goal is to preserve the proven local Windows cutoff behavior while building a clean, reproducible installation path and optional voice, learning, and date/theme layers around it.
+Early development. The project now has the foundation for cutoff enforcement, learning, voice control, date awareness, and a complete automatic theme layer.
