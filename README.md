@@ -1,5 +1,9 @@
 # OnCmd-⏻
 
+<p align="center">
+  <img src="assets/oncmd-art.svg" alt="Colorful OnCmd Digital Boundary Agent artwork" width="900">
+</p>
+
 ```text
   +==========================================================================+
   |                                                                          |
@@ -39,6 +43,18 @@
 
 OnCmd is a PowerShell-based Windows automation project built around a simple idea: enforce a user-defined digital cutoff without depending on a cloud service.
 
+## 🎨 Project Art
+
+OnCmd has a dedicated colorful terminal-inspired project banner in [`assets/oncmd-art.svg`](assets/oncmd-art.svg). It is designed to match the project's PowerShell / cyber-terminal identity while keeping the repository readable and professional.
+
+The artwork highlights the main architecture:
+
+- **Core** — PowerShell
+- **Worker** — Background enforcement
+- **Boundary** — Windows session lock
+- **Cooldown** — Actual Windows sleep detection/reset behavior
+- **Voice** — Optional local voice control
+
 ## Current architecture
 
 - **Core** — PowerShell command/control layer
@@ -57,6 +73,8 @@ OnCmd/
 ├── LICENSE
 ├── .gitignore
 ├── install.ps1
+├── assets/
+│   └── oncmd-art.svg
 ├── src/
 │   ├── OnCmd.ps1
 │   ├── OnCmd.Worker.ps1
