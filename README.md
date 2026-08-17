@@ -13,13 +13,15 @@
          ◆ LOCAL-FIRST    ◆ PERSISTENT    ◆ EVENT-DRIVEN
 ```
 
-**Local-first Windows digital boundary agent.**
+**Local-first digital boundary agent with a PowerShell-first architecture and a cross-platform foundation.**
 
-OnCmd is a PowerShell-based Windows automation project built around a simple idea: enforce a user-defined digital cutoff without depending on a cloud service.
+OnCmd started as a Windows PowerShell project built around a simple idea: enforce a user-defined digital cutoff without depending on a cloud service. The architecture is now being expanded so the same core concepts can operate across **Windows, macOS, and Linux**.
 
 ## 🚀 One-command setup
 
-You do **not** need to manually create the repository's folders or copy its scripts around.
+You do **not** need to manually create a pile of folders or copy scripts around.
+
+### Windows
 
 On a Windows machine with **Git for Windows** installed, open PowerShell and run:
 
@@ -27,40 +29,77 @@ On a Windows machine with **Git for Windows** installed, open PowerShell and run
 irm https://raw.githubusercontent.com/30lnewcomb-byte/OnCmd/main/Install-OnCmd.ps1 | iex
 ```
 
-The bootstrap installer will:
+### macOS / Linux
 
-1. Create `%LOCALAPPDATA%\OnCmd`.
-2. Clone OnCmd from GitHub, or update an existing OnCmd checkout with a fast-forward pull.
-3. Verify the required project files.
-4. Create the `oncmd` launcher.
-5. Add the launcher directory to the current user's PATH without requiring administrator rights.
-6. Run final installation checks.
+Open Terminal and run:
 
-After the installer finishes, open a **new PowerShell window** so Windows picks up the updated PATH, then run:
-
-```powershell
-oncmd
+```bash
+curl -fsSL https://raw.githubusercontent.com/30lnewcomb-byte/OnCmd/main/Install-OnCmd.sh | bash
 ```
 
-The installer prepares the system but does **not** silently enable voice or start enforcement on a fresh installation.
+The bootstrap installers create the local installation structure, clone or update the repository, verify required files, and create a user-level launcher. They do not silently enable enforcement or voice on a fresh installation.
 
-If Git is not installed, install Git for Windows first and rerun the bootstrapper.
+> **Platform note:** Windows remains the reference implementation for the existing cutoff/sleep enforcement worker. macOS and Linux now have the shared platform abstraction plus native lock/sleep adapters, forming the foundation for full cross-platform enforcement without duplicating the OnCmd brain.
 
 ## 🎨 Project Art
 
 OnCmd has a dedicated colorful terminal-inspired project banner in [`assets/oncmd-art.svg`](assets/oncmd-art.svg). Art is an important part of the project because its creator has a genuine passion for art and enjoys bringing that creative side into technical projects. The goal is for OnCmd to feel both engineered and expressive—not just functional code in a folder.
 
+## 🧠 Cross-platform architecture
+
+The project deliberately separates **what OnCmd decides** from **how the operating system performs the action**.
+
+```text
+                         ONCMD CORE
+                             │
+        ┌────────────────────┼────────────────────┐
+        │                    │                    │
+     Cutoff              Learning              Dates
+     Logic               History               Themes
+        │                    │                    │
+        └────────────────────┼────────────────────┘
+                             │
+                    PLATFORM ABSTRACTION
+                             │
+          ┌──────────────────┼──────────────────┐
+          │                  │                  │
+       Windows            macOS              Linux
+      PowerShell          Native             Native
+      session lock       osascript           loginctl
+      power worker         pmset             systemctl
+```
+
+The shared platform layer lives in [`src/OnCmd.Platform.ps1`](src/OnCmd.Platform.ps1).
+
+It provides:
+
+- `Get-OnCmdPlatform`
+- `Get-OnCmdPlatformInfo`
+- `Invoke-OnCmdLock`
+- `Invoke-OnCmdSleep`
+- `Test-OnCmdPlatformCapabilities`
+
+This means the core can ask for **"lock the session"** or **"request sleep"** without knowing which operating system is underneath it.
+
+### Native adapters
+
+- macOS: [`platform/macos/oncmd-platform.sh`](platform/macos/oncmd-platform.sh)
+- Linux: [`platform/linux/oncmd-platform.sh`](platform/linux/oncmd-platform.sh)
+
+The Linux adapter prefers `systemd/logind` and has common desktop locking fallbacks. The macOS adapter uses the native `osascript` session-lock path and `pmset sleepnow` for system sleep.
+
 ## Current architecture
 
 - **Core** — PowerShell command/control layer
 - **Worker** — background enforcement
-- **Boundary** — Windows session lock at cutoff
-- **Cooldown** — waits for an actual Windows sleep cycle before resetting
+- **Boundary** — session lock at cutoff
+- **Cooldown** — waits for the appropriate sleep/reset condition
 - **Storage** — persistent local JSON state and event logs
 - **Learning** — cutoff history for future usual-time suggestions
-- **Voice** — optional local Windows speech recognition worker
+- **Voice** — optional local voice layer
 - **Dates** — current-date awareness
 - **Themes** — automatic presentation layer kept separate from enforcement
+- **Platform** — Windows/macOS/Linux abstraction for OS-specific operations
 
 ## 🎨 Universal Date & Theme System
 
@@ -126,39 +165,48 @@ OnCmd/
 ├── README.md
 ├── LICENSE
 ├── Install-OnCmd.ps1
+├── Install-OnCmd.sh
 ├── .gitignore
 ├── assets/
 │   └── oncmd-art.svg
 ├── src/
+│   ├── OnCmd.Platform.ps1
 │   ├── OnCmd.Dates.ps1
 │   └── OnCmd.Themes.ps1
+├── platform/
+│   ├── macos/
+│   │   └── oncmd-platform.sh
+│   └── linux/
+│       └── oncmd-platform.sh
 └── config/
     └── config.example.json
 ```
 
-The repository contains the **program and installer logic**. Runtime state is intentionally kept under `%LOCALAPPDATA%\OnCmd` and is not committed to GitHub.
+The repository contains the **program and installer logic**. Runtime state is intentionally kept outside the repository so personal schedules, history, and machine-specific state are not committed to GitHub.
 
 ## Design principles
 
 - Local-first
 - Persistent
 - Event-driven
-- PowerShell-native
+- PowerShell-first
+- Cross-platform architecture
 - No AI API required for core operation
 - Optional local voice control
 - Automatic date awareness
 - User-controlled celebrations
 - Personal birthday theme stored once
-- Themes never control the safety/enforcement path
+- Themes never control the enforcement path
+- Platform code is isolated from decision logic
 - No credential handling
 - No authentication bypass
 - No keyboard/mouse interception
 
 ## Voice
 
-Voice is optional and disabled by default. When enabled, OnCmd uses Windows `System.Speech` recognition and a Scheduled Task so the listener can run independently of an open PowerShell terminal.
+Voice is optional. The original Windows voice worker uses local Windows speech recognition and can run independently of an open PowerShell terminal.
 
-Example commands:
+The command language is intended to stay platform-neutral:
 
 ```text
 OnCmd, status
@@ -171,7 +219,7 @@ Schedule-changing voice commands should require confirmation before being applie
 
 ## Runtime data
 
-OnCmd keeps mutable runtime data outside the repository:
+OnCmd keeps mutable runtime data outside the repository. Windows currently uses:
 
 ```text
 %LOCALAPPDATA%\OnCmd\
@@ -182,8 +230,8 @@ OnCmd keeps mutable runtime data outside the repository:
 └── bin\
 ```
 
-This keeps personal schedules, history, and machine-specific state out of source control.
+The cross-platform installers use user-owned application data locations appropriate to the platform rather than committing runtime state to Git.
 
 ## Status
 
-Early development. The project now has the foundation for cutoff enforcement, learning, voice control, date awareness, a universal opt-in theme layer, and a one-command bootstrap installer.
+**Early development / cross-platform expansion.** Windows is the reference enforcement platform. The shared platform layer and native macOS/Linux adapters are now in place so the same OnCmd architecture can grow across all three major desktop operating systems without turning the project into three unrelated codebases.
