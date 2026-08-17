@@ -1,0 +1,54 @@
+name: PowerShell checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PowerShell
+        uses: PowerShell/PowerShell@v1
+        with:
+          pwsh-version: 'latest'
+
+      - name: Parse PowerShell files
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Recurse -Filter '*.ps1' -File |
+            Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' }
+
+          $failed = $false
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $file.FullName,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+
+            if ($errors.Count -gt 0) {
+              $failed = $true
+              Write-Host "FAIL: $($file.FullName)"
+              $errors | ForEach-Object { Write-Host "  $($_.Message)" }
+            } else {
+              Write-Host "OK:   $($file.FullName)"
+            }
+          }
+
+          if ($failed) { exit 1 }
+
+      - name: Smoke test CLI
+        shell: pwsh
+        run: |
+          $output = & ./OnCmd.ps1 status 2>&1
+          if ($LASTEXITCODE -ne 0) {
+            $output | Out-Host
+            exit $LASTEXITCODE
+          }
+          $output | Out-Host
