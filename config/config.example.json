@@ -1,0 +1,13 @@
+{
+  "Version": 3,
+  "StartupEnabled": true,
+  "WarningMinutes": 15,
+  "ResetRule": "Actual Windows sleep",
+  "Product": "OnCmd-⏻",
+  "VoiceEnabled": false,
+  "VoiceWakePhrase": "oncmd",
+  "VoiceLanguage": "en-US",
+  "BirthdayThemeEnabled": true,
+  "BirthdayMonth": null,
+  "BirthdayDay": null
+}
