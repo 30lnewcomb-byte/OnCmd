@@ -32,7 +32,9 @@ function Get-OnCmdThemeDefinition {
 function Set-OnCmdConsoleTheme {
     param([Parameter(Mandatory)][string]$ThemeName)
     $theme = Get-OnCmdThemeDefinition $ThemeName
-    try { $Host.UI.RawUI.ForegroundColor = [ConsoleColor]::$($theme.Foreground) } catch { }
+    try {
+        $Host.UI.RawUI.ForegroundColor = [System.Enum]::Parse([ConsoleColor], $theme.Foreground)
+    } catch { }
     return $theme
 }
 
