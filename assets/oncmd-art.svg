@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">OnCmd Digital Boundary Agent</title>
+  <desc id="desc">Colorful terminal-inspired artwork for OnCmd.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.5" stop-color="#111827"/>
+      <stop offset="1" stop-color="#190b2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#f472b6"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="420" rx="28" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1152" height="372" rx="22" fill="none" stroke="url(#accent)" stroke-width="3"/>
+  <circle cx="64" cy="62" r="9" fill="#f87171"/>
+  <circle cx="94" cy="62" r="9" fill="#facc15"/>
+  <circle cx="124" cy="62" r="9" fill="#4ade80"/>
+  <text x="70" y="142" fill="#67e8f9" font-family="Consolas, monospace" font-size="30" font-weight="700">ONCMD-⏻</text>
+  <text x="70" y="188" fill="#ffffff" font-family="Consolas, monospace" font-size="52" font-weight="800" filter="url(#glow)">DIGITAL BOUNDARY AGENT</text>
+  <text x="70" y="230" fill="#c4b5fd" font-family="Consolas, monospace" font-size="22">LOCAL-FIRST  •  PERSISTENT  •  EVENT-DRIVEN</text>
+  <rect x="70" y="268" width="1060" height="2" fill="url(#accent)"/>
+  <text x="70" y="315" fill="#67e8f9" font-family="Consolas, monospace" font-size="19">CORE: POWERSHELL</text>
+  <text x="350" y="315" fill="#a78bfa" font-family="Consolas, monospace" font-size="19">WORKER: BACKGROUND</text>
+  <text x="680" y="315" fill="#f472b6" font-family="Consolas, monospace" font-size="19">VOICE: OPTIONAL</text>
+  <text x="70" y="354" fill="#86efac" font-family="Consolas, monospace" font-size="19">BOUNDARY: WINDOWS SESSION LOCK</text>
+  <text x="560" y="354" fill="#fde68a" font-family="Consolas, monospace" font-size="19">COOLDOWN: ACTUAL SLEEP</text>
+</svg>
