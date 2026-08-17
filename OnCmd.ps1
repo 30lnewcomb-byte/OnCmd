@@ -1,9 +1,6 @@
 # ============================================================================
 # ONCMD-⏻ CLI ENTRYPOINT
-#
 # Lightweight cross-platform command surface.
-# Loads the shared date/theme/platform modules and keeps presentation logic
-# separate from enforcement. Runtime state remains outside the repository.
 # ============================================================================
 
 [CmdletBinding()]
@@ -19,11 +16,9 @@ $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 function Load-OnCmdModule {
-    param([string]$Name)
-    $path = Join-Path $Root "src\$Name"
-    if (-not (Test-Path -LiteralPath $path)) {
-        throw "OnCmd module not found: $path"
-    }
+    param([Parameter(Mandatory)][string]$Name)
+    $path = Join-Path (Join-Path $Root 'src') $Name
+    if (-not (Test-Path -LiteralPath $path)) { throw "OnCmd module not found: $path" }
     . $path
 }
 
@@ -47,10 +42,11 @@ function Show-OnCmdStatus {
 
     Show-OnCmdBanner
     Write-Host "  Date:     $($dateInfo.Date.ToString('yyyy-MM-dd'))"
-    Write-Host "  Platform: $($platform.Name)"
+    Write-Host "  Platform: $($platform.Platform)"
+    Write-Host "  PowerShell: $($platform.PowerShellEdition) $($platform.PowerShellVersion)"
     Write-Host "  Theme:    $($theme.Name) $($theme.Icon)" -ForegroundColor $theme.Accent
     Write-Host "  Birthday: $(if ($dateInfo.BirthdayConfigured) { 'configured' } else { 'not configured' })"
-    Write-Host "  Engine:   date/theme awareness ready" -ForegroundColor Green
+    Write-Host '  Engine:   date/theme awareness ready' -ForegroundColor Green
     Write-Host ''
 }
 
@@ -85,9 +81,7 @@ switch ($Command.ToLowerInvariant()) {
             $config = Get-OnCmdDateConfig
             if ($config.BirthdayMonth -and $config.BirthdayDay) {
                 Write-Host ("Birthday: {0:00}-{1:00}" -f [int]$config.BirthdayMonth,[int]$config.BirthdayDay)
-            } else {
-                Write-Host 'Birthday: not configured.'
-            }
+            } else { Write-Host 'Birthday: not configured.' }
         }
     }
     'help' {
@@ -100,8 +94,5 @@ switch ($Command.ToLowerInvariant()) {
         Write-Host '  oncmd birthday MM DD' -ForegroundColor Green
         Write-Host '  oncmd birthday clear' -ForegroundColor Green
     }
-    default {
-        Write-Error "Unknown OnCmd command '$Command'. Run 'oncmd help'."
-        exit 2
-    }
+    default { throw "Unknown OnCmd command '$Command'. Run 'oncmd help'." }
 }
