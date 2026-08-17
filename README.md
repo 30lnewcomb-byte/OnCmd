@@ -45,7 +45,7 @@ OnCmd is a PowerShell-based Windows automation project built around a simple ide
 
 ## 🎨 Project Art
 
-OnCmd has a dedicated colorful terminal-inspired project banner in [`assets/oncmd-art.svg`](assets/oncmd-art.svg). It is designed to match the project's PowerShell / cyber-terminal identity while keeping the repository readable and professional.
+OnCmd has a dedicated colorful terminal-inspired project banner in [`assets/oncmd-art.svg`](assets/oncmd-art.svg). Art is an important part of the project because its creator has a genuine passion for art and enjoys bringing that creative side into technical projects. The goal is for OnCmd to feel both engineered and expressive—not just functional code in a folder.
 
 The artwork highlights the main architecture:
 
