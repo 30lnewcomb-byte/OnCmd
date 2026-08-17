@@ -54,6 +54,7 @@ The artwork highlights the main architecture:
 - **Boundary** — Windows session lock
 - **Cooldown** — Actual Windows sleep detection/reset behavior
 - **Voice** — Optional local voice control
+- **Dates** — Automatic date/theme awareness
 
 ## Current architecture
 
@@ -62,8 +63,29 @@ The artwork highlights the main architecture:
 - **Boundary** — Windows session lock at cutoff
 - **Cooldown** — waits for an actual Windows sleep cycle before resetting
 - **Storage** — persistent local JSON state and event logs
-- **Learning** — records cutoff history so OnCmd can eventually suggest the user's usual time
+- **Learning** — records cutoff history so OnCmd can suggest the user's usual time
 - **Voice** — optional local Windows speech recognition worker
+- **Date & Theme Engine** — automatically knows the current date and can switch the terminal theme for special dates
+
+## 🎂 Birthday Theme
+
+OnCmd can remember a birthday **once** as a month/day. You do not need to re-enter it every year.
+
+The date engine stores only the month and day, so the birthday theme automatically activates every year without storing a birth year. Birthday theme detection takes priority over seasonal themes.
+
+Example:
+
+```powershell
+. "$env:LOCALAPPDATA\OnCmd\src\OnCmd.Dates.ps1"
+Set-OnCmdBirthday -Month 4 -Day 21
+
+Get-OnCmdTheme
+# BIRTHDAY (on the configured date)
+```
+
+To change it later, run `Set-OnCmdBirthday` again. To remove it, use `Clear-OnCmdBirthday`.
+
+The date engine also recognizes built-in special dates such as New Year's Day, Valentine's Day, Independence Day, Halloween, and the winter holiday period. The design intentionally keeps themes separate from the cutoff logic: a theme can never change the enforcement behavior.
 
 ## Repository layout
 
@@ -76,10 +98,7 @@ OnCmd/
 ├── assets/
 │   └── oncmd-art.svg
 ├── src/
-│   ├── OnCmd.ps1
-│   ├── OnCmd.Worker.ps1
-│   ├── OnCmd.Learning.ps1
-│   └── OnCmd.VoiceWorker.ps1
+│   └── OnCmd.Dates.ps1
 └── config/
     └── config.example.json
 ```
@@ -94,6 +113,9 @@ The repository contains the **program and installer logic**. Runtime state is in
 - PowerShell-native
 - No AI API required for core operation
 - Optional local voice control
+- Automatic date awareness
+- Personal birthday theme stored once
+- Themes never control the safety/enforcement path
 - No credential handling
 - No authentication bypass
 - No keyboard/mouse interception
@@ -130,4 +152,4 @@ This keeps personal schedules, history, and machine-specific state out of source
 
 ## Status
 
-Early development. The first goal is to preserve the proven local Windows cutoff behavior while building a clean, reproducible installation path and optional voice/learning layers around it.
+Early development. The first goal is to preserve the proven local Windows cutoff behavior while building a clean, reproducible installation path and optional voice, learning, and date/theme layers around it.
