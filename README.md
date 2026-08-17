@@ -1,5 +1,40 @@
 # OnCmd-⏻
 
+```text
+  +==========================================================================+
+  |                                                                          |
+  |                         O N C M D - [POWER]                             |
+  |                                                                          |
+  |                    DIGITAL BOUNDARY AGENT                              |
+  |                                                                          |
+  +==========================================================================+
+
+                  ██████╗ ███╗   ██╗ ██████╗███╗   ███╗██████╗
+                 ██╔═══██╗████╗  ██║██╔════╝████╗ ████║██╔══██╗
+                 ██║   ██║██╔██╗ ██║██║     ██╔████╔██║██║  ██║
+                 ██║   ██║██║╚██╗██║██║     ██║╚██╔╝██║██║  ██║
+                 ╚██████╔╝██║ ╚████║╚██████╗██║ ╚═╝ ██║██████╔╝
+
+                            +------------+
+                            |     [ ]    |
+                            |      |     |
+                            |    [   ]   |
+                            +------------+
+
+                  D I G I T A L   B O U N D A R Y
+                            A G E N T
+
+       +------------------------------------------------------------+
+       | CORE       ● POWERSHELL                                   |
+       | WORKER     ● BACKGROUND                                   |
+       | BOUNDARY   ● WINDOWS SESSION LOCK                       |
+       | COOLDOWN   ● WAIT FOR ACTUAL SLEEP                      |
+       | STORAGE    ● LOCAL PERSISTENCE                           |
+       +------------------------------------------------------------+
+
+         ◆ LOCAL-FIRST    ◆ PERSISTENT    ◆ EVENT-DRIVEN
+```
+
 **Local-first Windows digital boundary agent.**
 
 OnCmd is a PowerShell-based Windows automation project built around a simple idea: enforce a user-defined digital cutoff without depending on a cloud service.
